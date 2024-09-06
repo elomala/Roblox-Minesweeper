@@ -1,0 +1,10 @@
+local ts = game:GetService("TweenService")
+local neighbours = require(game.ServerStorage.Neighbours)
+local module = {}
+
+local colors = {
+	Color3.fromRGB(41, 170, 51), Color3.fromRGB(37, 118, 65)
+}
+local function generate(size, thing, color)
+-- ill do this tmrw
+end
