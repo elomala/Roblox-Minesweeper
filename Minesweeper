@@ -3,8 +3,28 @@ local neighbours = require(game.ServerStorage.Neighbours)
 local module = {}
 
 local colors = {
-	Color3.fromRGB(41, 170, 51), Color3.fromRGB(37, 118, 65)
+	Color3.fromRGB(41, 170, 51), Color3.fromRGB(37, 118, 65) -- two colors between which the boxes alternate
 }
-local function generate(size, thing, color)
--- ill do this tmrw
+local function generate(size, color) -- used to generate the boxes on which the game is played
+	local model = Instance.new("Model")
+	local startingpart = game.ServerStorage.GameStuff.minesweeper.startingpart:Clone() -- Make a cube beforehand and store it so that it can be cloned again and again
+	startingpart.Color = colors[1]
+	startingpart.Name = 1
+	startingpart.Position = Vector3.new(10000,10000,10000)
+	startingpart.Parent = model
+	local lastpart = startingpart
+	for i = 1, (size*size)-1, 1 do -- minus 1 because one box is already placed and used as starting point
+		lastpart = lastpart:Clone()
+		lastpart.Name = i+1
+		lastpart.Color = colors[(i%2)+1] -- this is a cool way to alternate colors
+		if i%size ~= 0 then
+			lastpart.Position = Vector3.new(lastpart.Position.X+lastpart.Size.X,lastpart.Position.Y,lastpart.Position.Z)
+		else
+			lastpart.Position = startingpart.Position + Vector3.new(0,0,5)
+			startingpart = lastpart
+		end
+		lastpart.Parent = model
+	end
+	return model
 end
+
