@@ -1,10 +1,33 @@
 local ts = game:GetService("TweenService")
-local neighbours = require(game.ServerStorage.Neighbours)
-local module = {}
 
 local colors = {
 	Color3.fromRGB(41, 170, 51), Color3.fromRGB(37, 118, 65) -- two colors between which the boxes alternate
 }
+
+local function neighbours(number, rowsize) -- this function returns the blocks around the block represented by the "number" variable.
+	if type(number) == "string" then tonumber(number) end -- since name is stored as a string it is to be converted to a number for inequality operators
+	if type(rowsize) == "string" then tonumber(rowsize) end
+	if number == 1 then
+		return {2,1+rowsize,rowsize+2}
+	elseif number == rowsize then
+		return {rowsize-1, 2*rowsize, 2*rowsize - 1}
+	elseif number == rowsize*rowsize then
+		return {number-1, number - rowsize, number - (rowsize+1)}
+	elseif number == rowsize * rowsize - (rowsize-1) then
+		return {number+1, number - rowsize, number - (rowsize-1)}
+	elseif math.floor(number/rowsize) == 0 then
+		return {number + (rowsize-1), number + rowsize, number + (rowsize+1), number + 1, number -1}
+	elseif math.ceil(number/rowsize) == rowsize then
+		return {number + 1, number - 1, number - rowsize, number - (rowsize-1), number - (rowsize+1)}
+	elseif number%rowsize == 1 then
+		return {number + rowsize, number - rowsize, number + 1, number - (rowsize-1), number + (rowsize+1)}
+	elseif number%rowsize == 0 then
+		return {number + rowsize, number - rowsize, number -1, number + (rowsize-1), number - (rowsize+1)}
+	else
+		return {number + rowsize, number - rowsize, number -1, number +1 , number + (rowsize-1), number - (rowsize-1), number - (rowsize+1), number + (rowsize+1)}
+	end
+end
+
 local function generate(size, color) -- used to generate the boxes on which the game is played
 	local model = Instance.new("Model")
 	local startingpart = game.ServerStorage.GameStuff.minesweeper.startingpart:Clone() -- Make a cube beforehand and store it so that it can be cloned again and again
@@ -28,3 +51,10 @@ local function generate(size, color) -- used to generate the boxes on which the 
 	return model
 end
 
+function module.mineSweeper(size:number, pos, player:Player) 
+-- size will the number of rows and coloumns. Currently, number of rows and coloumns will be same. You can have rectangular grid by a bit of editing.
+-- pos will be the position where the whole game is supposed to spawn
+-- player will refer to the only player that can impact the game to prevent sabotaging.
+
+
+end
