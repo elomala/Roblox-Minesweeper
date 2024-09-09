@@ -1,4 +1,5 @@
 local ts = game:GetService("TweenService")
+local module = {}
 
 local colors = {
 	Color3.fromRGB(41, 170, 51), Color3.fromRGB(37, 118, 65) -- two colors between which the boxes alternate
@@ -108,3 +109,4 @@ function module.mineSweeper(size:number, pos, player:Player)
 		surf.TextLabel.Text = tostring(number) -- sets the number
 	end
 end
+return module
