@@ -76,4 +76,35 @@ function module.mineSweeper(size:number, pos, player:Player)
 			end
 		end)
 	end
+	for i = 1, bombnumber, 1 do
+		local no = math.random(#safe)
+		table.insert(bombs, safe[no])
+		table.remove(safe, no)
+	end
+	for i, v in pairs(bombs) do -- ADDING THIS TO BOMBS TO TRIP EXPLOITERS
+		local surf = game.ServerStorage.GameStuff.minesweeper.SurfaceGui:Clone()
+		surf.Enabled = false
+		surf.Parent = v 
+		local textlabel = surf.TextLabel
+		textlabel.Text = tostring(math.random(1,5))-- assigns random number to all bombs to trip them exploiters
+	end
+	local zeros = {} 
+	for i, v in pairs(safe) do 
+		local surf = game.ServerStorage.GameStuff.minesweeper.SurfaceGui:Clone()
+		surf.Enabled = false
+		surf.Parent = v 
+		local textlabel = surf.TextLabel
+		local current = v.Name
+		local number = 0
+		local surround = neighbours(current, size)
+		for i, v in surround do
+			if table.find(bombs, model:FindFirstChild(tostring(v))) then
+				number += 1
+			end
+		end
+		if number == 0 then table.insert(zeros, v)
+			number = math.random(1,5)	-- assigns random number to all 0s to trip them exploiters
+		end
+		surf.TextLabel.Text = tostring(number) -- sets the number
+	end
 end
