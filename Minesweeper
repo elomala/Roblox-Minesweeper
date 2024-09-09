@@ -56,5 +56,24 @@ function module.mineSweeper(size:number, pos, player:Player)
 -- pos will be the position where the whole game is supposed to spawn
 -- player will refer to the only player that can impact the game to prevent sabotaging.
 
-
+	local bombs = {}
+	local safe = model:GetChildren()
+	local bombnumber = math.random(math.ceil((size*size)*(13/100)),math.ceil((size*size)*(18/100))) -- randomly selected number of bombs having density 13-18%
+	print(bombnumber/#safe * 100) -- prints % density of bombs
+	for i, v in model:GetChildren() do
+		local deb = false
+		v.ClickDetector.MouseClick:Connect(function(plr) -- clicking allows you to place flags
+			if deb then return end
+			if player == plr then
+				deb = true
+				v.Flag.FlagPlace:Play()
+				if v.Flag.Transparency == 0 then
+					v.Flag.Transparency = 1
+				else
+					v.Flag.Transparency = 0
+				end
+				task.wait(0.4) deb = false
+			end
+		end)
+	end
 end
