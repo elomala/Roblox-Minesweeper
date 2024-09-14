@@ -6,10 +6,10 @@ Roblox minesweeper game generator.
 I have put a few countermeasures against exploiters in the game. These are:
 <li>Every block is identical. Meaning no one can tell the difference between a bomb and a normal block without touching it.</li>
 <li>The GUI that displays number of bombs around a safe box is present in each and every box and is randomised for bombs and boxes have no bombs around them. Meaning if an exploiter tries to learn the numbers beforehand messing with the Visible property of the GUI, he will be misguided.</li>
-<li></li>
+<li>You can set it so that only one or all players are able to interact with the tiles. This is helpful in preventing sabotaging.</li>
 <h1 align="centre">How to use</h1>
 Using this module is quite easy. Here are a few steps:
 <li>Copy the code and put it in a module script</li>
 <li>require the module script in a ServerScript using require([module location goes here])</li>
 <li>following code will run spawn the game: module.mineSweeper(size:number, pos:Vector3, player:Player)</li>
-<ul><li>Here, size is the number of rows and coloumns, pos is the position where the game will spawn, and player reffers to the only player allowed to interact with the tiles.</li></ul>
+<ul><li>Here, size is the number of rows and coloumns, pos is the position where the game will spawn, and player reffers to the only player allowed to interact with the tiles. Setting player = nil will make it so that all players can interact with the minesweeper game.</li></ul>
