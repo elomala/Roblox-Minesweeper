@@ -119,5 +119,133 @@ function module.mineSweeper(size:number, pos, player:Player)
 		end
 		surf.TextLabel.Text = tostring(number) -- sets the number
 	end
+	local cs = {}
+	local done = 0 -- if done == safeblocks means that the player wins the game
+	local function onTouchingBomb(v, hit)
+		v:FindFirstChildOfClass("ClickDetector"):Destroy()
+		v.Color = Color3.new(1,0,0)
+		local char = hit.Parent
+		char.Humanoid:TakeDamage(100)
+		--GAME OVER
+		if player then
+			print(player.Name .. " has lost the game")
+		else
+			print(char.Name .. " just got blasted")
+		end
+		--model:Destroy() -- used to end game or something
+	end
+	local function chain(part) -- used for chain unlocking all the tiles that are adjacent and are 0s
+		local done = {} -- zeros are stored in this so that their adjacent blocks can be checked later for chaining
+		for _,z in pairs(neighbours(tonumber(part.Name),size)) do -- goes through all the neighbours of the cell
+			local thing = model:FindFirstChild(tostring(z)) -- the instance having a specific number z
+			if not thing then continue end
+			if thing:GetAttribute("Done") then continue end 
+			thing:SetAttribute("Done", true)
+			cs[tostring(thing.Name) .. "_c"]:Disconnect()
+			if table.find(zeros, thing) then -- if one of them is in "zeros" i.e tiles having no adjacent bombs
+				table.insert(done, thing) -- surface gui is not enabled here because its a zero
+			else
+				thing.SurfaceGui.Enabled = true
+			end
+			thing.Color = Color3.fromRGB(253, 234, 141)
+			if thing:FindFirstChildOfClass("ClickDetector") then
+				thing:FindFirstChildOfClass("ClickDetector"):Destroy()
+			end
+		end
+		return done -- returning the zeros that got done
+	end
+	local function onTouchingSafe(v)
+		v:SetAttribute("Done", true)
+		done += 1
+		if done == #safe then -- if all safe tiles are done then wins game
+			-- PLAYER WINS GAME!!
+			if player then
+				print(player.Name .. " has won the game")
+			else
+				print("The game has been won")
+			end
+			-- model:Destroy() -- ends game or something. Award with credits or whatever here
+		end
+		if v:FindFirstChildOfClass("ClickDetector") then
+			v:FindFirstChildOfClass("ClickDetector"):Destroy()
+		end
+		v.Color = Color3.fromRGB(253, 234, 141)
+		--chaining is basically looking at the tiles adjacent to 0s and if they are 0s, their adjacent tiles are checked and so on
+		--if a tile is not a zero, it is revealed and adjacent tiles from the non zero tiles are not checked.
+		if table.find(zeros, v) then -- if the player steps on a zero tile, chaining starts.
+			local donefor = {v} -- table containing all the zeros that are done
+			repeat -- its hard to explain this loop in words. The basic functionality has been explained above.
+				local starting = {}
+				for x, d in pairs(donefor) do
+					table.insert(starting, x)
+					local returnee = chain(d)
+					for i, v in pairs(returnee) do
+						table.insert(donefor,v)
+					end
+				end
+				for _, j in starting do table.remove(donefor, j) end
+			until #donefor == 0
+		else
+			v.SurfaceGui.Enabled = true
+		end
+	end
+	for i, v:BasePart in model:GetChildren() do
+		if table.find(bombs, v) then
+			local c
+			c = v.Touched:Connect(function(hit)
+				if v.Flag.Transparency == 0 then return end
+				if not hit.Parent:FindFirstChildOfClass("Humanoid") then return end
+				if player then
+					if player == game.Players:GetPlayerFromCharacter(hit.Parent) then
+						onTouchingBomb(v, hit)
+						c:Disconnect()
+					end
+				else
+					onTouchingBomb(v, hit)
+					c:Disconnect()
+				end
+			end)
+		else
+			cs[tostring(v.Name) .. "_c"] = v.Touched:Connect(function(hit)
+				if v.Flag.Transparency == 0 then return end
+				if not hit.Parent:FindFirstChildOfClass("Humanoid") then return end
+				if player then
+					if player == game.Players:GetPlayerFromCharacter(hit.Parent) then
+						onTouchingSafe(v)
+						cs[tostring(v.Name) .. "_c"]:Disconnect()
+					end
+				else
+					onTouchingSafe(v)
+					cs[tostring(v.Name) .. "_c"]:Disconnect()
+				end
+			end)
+		end
+	end
+	model.Parent = workspace
+	model:MoveTo(pos)
+	
+	if player then -- TPing player to one of the safe blocks
+		local char = player.Character
+		if not char then player.CharacterAdded:Wait() end
+		local hum = char:FindFirstChildOfClass("Humanoid")
+		if hum then hum.WalkSpeed = 0 end
+		task.wait(1)
+		char:MoveTo(zeros[math.random(1,#zeros)].Position + Vector3.new(0,6,0))
+		task.wait(1)
+		hum.WalkSpeed = 16
+	else -- TPing everyone to a random safeblock
+		for i, players in pairs(game.Players:GetPlayers()) do
+			task.spawn(function()
+				local char = players.Character
+				if not char then players.CharacterAdded:Wait() end
+				local hum = char:FindFirstChildOfClass("Humanoid")
+				if hum then hum.WalkSpeed = 0 end
+				task.wait(1)
+				char:MoveTo(zeros[math.random(1,#zeros)].Position + Vector3.new(0,6,0))
+				task.wait(1)
+				hum.WalkSpeed = 16
+			end)
+		end
+	end
 end
 return module
