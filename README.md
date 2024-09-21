@@ -13,3 +13,4 @@ Using this module is quite easy. Here are a few steps:
 <li>require the module script in a ServerScript using require([module location goes here])</li>
 <li>following code will run spawn the game: module.mineSweeper(size:number, pos:Vector3, player:Player)</li>
 <ul><li>Here, size is the number of rows and coloumns, pos is the position where the game will spawn, and player reffers to the only player allowed to interact with the tiles. Setting player = nil will make it so that all players can interact with the minesweeper game.</li></ul>
+<li>You can just download the Minesweeper.rblx file and try it there</li>
