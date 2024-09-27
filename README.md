@@ -1,7 +1,14 @@
 <h1 align="centre">Roblox Minesweeper</h1>
 Roblox minesweeper game generator.
 <br>Minesweeper is a classic single-player puzzle game where the objective is to clear a grid of hidden mines without detonating them. The player uncovers squares, and if a square doesn't contain a mine, it reveals a number indicating how many mines are adjacent to it. Using logic and deduction, the player must flag potential mines and avoid touching them while uncovering all other safe squares to win the game. If a mine is touched, the game is over.
-<br>This is very basic minesweeper generator. I have only attached the game-generator script. You can spawn the game at any position by passing the size and starting position in the Minesweeper function.
+<br>This is very basic minesweeper generator. I have only attached the game-generator script. You can spawn the game at any position by passing the size and starting position in the Minesweeper function. <br>
+<video width="500px" 
+           height="400px" 
+           controls="controls">
+        <source src=
+"/sampleVideo" 
+                type="video/mp4" />
+    </video>
 <h1 align="centre">Exploiter Prevention</h1>
 I have put a few countermeasures against exploiters in the game. These are:
 <li>Every block is identical. Meaning no one can tell the difference between a bomb and a normal block without touching it.</li>
